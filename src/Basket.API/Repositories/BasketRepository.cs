@@ -4,11 +4,11 @@ using Newtonsoft.Json;
 
 namespace Basket.API.Repositories
 {
-    public class BaseketRepository : IBasketRepository
+    public class BasketRepository : IBasketRepository
     {
         private readonly IDistributedCache _distributedCache;
 
-        public BaseketRepository(IDistributedCache distributedCache)
+        public BasketRepository(IDistributedCache distributedCache)
         {
             _distributedCache = distributedCache;
         }
