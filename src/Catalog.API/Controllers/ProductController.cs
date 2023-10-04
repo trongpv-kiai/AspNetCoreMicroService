@@ -29,24 +29,44 @@ namespace Catalog.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(string id)
         {
-            return Ok(await _repository.GetProduct(id));
+            var product = await _repository.GetProduct(id);
+            if(product == null)
+            {
+                _logger.LogError($"Product with id: {id}, not found.");
+                return NotFound();
+            }
+            return Ok(product);
         }
 
         [HttpPost]
         public async Task<ActionResult<Product>> CreateProduct([FromBody] Product product)
         {
-            return Ok(await _repository.CreateProduct(product));
+            await _repository.CreateProduct(product);
+
+            return CreatedAtRoute(nameof(GetProduct), new {id = product.Id}, product);
         }
 
         [HttpPut()]
         public async Task<ActionResult<Product>> UpdateProduct([FromBody] Product product)
         {
+            var productModel = await _repository.GetProduct(product.Id);
+            if(productModel == null)
+            {
+                _logger.LogError($"Product with id: {product.Id}, not found.");
+                return NotFound();
+            }
             return Ok(await _repository.UpdateProduct(product));
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<bool>> Delete(string id)
         {
+            var productModel = await _repository.GetProduct(id);
+            if (productModel == null)
+            {
+                _logger.LogError($"Product with id: {id}, not found.");
+                return NotFound();
+            }
             return Ok(await _repository.DeleteProduct(id));
         }
     }
